@@ -9,7 +9,8 @@ function RegisterPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmpassword, setConfirmPassword] = useState("");
-    const [eorror, setEorror] = useState("");
+    const [error, setEorror] = useState("");
+    const [success, setSuccess] = useState("");
 
     console.log(name, email, password, confirmpassword)
 
@@ -27,6 +28,28 @@ function RegisterPage() {
       }
     
       try {
+        const resCheckUser = await fetch("http://localhost:3000/api/checkUser", {
+          method: "POST",
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+      });
+  
+      if (!resCheckUser.ok) {
+          throw new Error("Failed to check user. Server responded with an error.");
+      }
+  
+      const data = await resCheckUser.json();
+      const { user } = data;
+  
+      if (user) {
+          setEorror("Email นี้มีผู้ใช้แล้ว!");
+          return;
+      }
+  
+        
+
         const res = await fetch("http://localhost:3000/api/register", {
           method: "POST",
           headers: {
@@ -38,9 +61,12 @@ function RegisterPage() {
             password,
           }),
         });
+        const text = await res.text();  // รับคำตอบเป็น string เพื่อดูว่ามีอะไรส่งกลับมา
+        console.log("Response text:", text);
     
         if (res.ok) {
           setEorror("");
+          setSuccess("สมัครสมาชิกสำเร็จ")
           const form = e.target;
           form.reset();
           console.log("การสมัครสมาชิกสำเร็จ!");
@@ -62,9 +88,14 @@ function RegisterPage() {
           <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">Register</h2>
           <form onSubmit={handleSubmit}>
 
-            {eorror && (
+            {error && (
                 <div className='bg-red-500 w-fit text-sm text-white py-1 px-3 rounded-md'>
-                   {eorror}
+                   {error}
+                </div>
+            )}
+             {success && (
+                <div className='bg-green-500 w-fit text-sm text-white py-1 px-3 rounded-md'>
+                   {success}
                 </div>
             )}
             <div className="mb-4">
