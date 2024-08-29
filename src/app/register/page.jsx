@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 
 function RegisterPage() {
 
@@ -11,6 +13,9 @@ function RegisterPage() {
     const [confirmpassword, setConfirmPassword] = useState("");
     const [error, setEorror] = useState("");
     const [success, setSuccess] = useState("");
+
+    const {data: session} = useSession();
+    if (session) redirect("/welcome");
 
     console.log(name, email, password, confirmpassword)
 

@@ -4,16 +4,18 @@ import React from 'react';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import { useSession } from 'next-auth/react';
-
+import { redirect } from 'next/navigation';
 
 
 function WelcomePage() {
-
+    
   const {data: session} = useSession();
   console.log(session);
+  
+  if (!session) redirect("/login");
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <Navbar />
+      <Navbar session ={session}/>
       <main className="flex-grow flex items-center justify-center">
         <div className="max-w-lg mx-auto text-center p-6 bg-white shadow-md rounded-lg">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to Iphone Store</h1>

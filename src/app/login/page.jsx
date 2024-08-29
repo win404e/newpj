@@ -1,9 +1,12 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import Navbar from "../components/Navbar";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
+
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -11,6 +14,8 @@ function LoginPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const {data: session} = useSession();
+    if (session) router.replace("welcome");
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -36,10 +41,12 @@ function LoginPage() {
       <Navbar />
       <div className="container mx-auto flex justify-center items-center py-12">
         <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">Login</h2>
+          <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
+            Login
+          </h2>
           <form onSubmit={handleSubmit}>
             {error && (
-              <div className='bg-red-500 w-fit text-sm text-white py-1 px-3 rounded-md'>
+              <div className="bg-red-500 w-fit text-sm text-white py-1 px-3 rounded-md">
                 {error}
               </div>
             )}
@@ -67,7 +74,10 @@ function LoginPage() {
             </button>
           </form>
           <p className="mt-4 text-center text-gray-600">
-            Don't have an account? <a href="/register" className="text-blue-500 hover:underline">Register</a>
+            Don't have an account?{" "}
+            <a href="/register" className="text-blue-500 hover:underline">
+              Register
+            </a>
           </p>
         </div>
       </div>
